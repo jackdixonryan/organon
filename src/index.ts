@@ -57,11 +57,30 @@ const idB = engine.statements.submit({
 
 // console.log(engine.statements.getAll());
 const argument = engine.createArgument();
-argument.premises.addConditional({
-  antecedent: engine.statements.get({ id: idA }),
-  consequent: engine.statements.get({ id: idB }),
+argument.premises.addComponent({
+  type: "conditional",
+  contents: {
+    antecedent: engine.statements.get({ id: idA }),
+    consequent: engine.statements.get({ id: idB }),
+  }
 });
 
-console.log(argument.plaintext());
+argument.premises.addComponent({ 
+  type: "statement", 
+  contents: {
+    statement: engine.statements.get({ id: idA }),
+  }
+});
+
+argument.conclusions.addComponent({
+  type: "statement",
+  contents: {
+    statement: engine.statements.get({ id: idB }),
+  }
+})
+
+// console.log(argument.plaintext());
+// console.log(argument.getForm());
+console.log(argument.getType());
 
 export default organon;
