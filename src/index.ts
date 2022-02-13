@@ -5,15 +5,15 @@ import statements from "./modules/statements";
 import { Statement } from "./types";
 
 interface OrganonInstance {
-  export: Function;
-  import?: Function;
+  export: () => string;
+  import?: (data: string) => void;
   statements: { 
-    getAll: Function;
-    submit: Function;
-    delete: Function;
-    get: Function;
+    getAll: (options?: { truthValue: boolean}) => Statement[];
+    submit: (statement: Statement) => string;
+    delete: (id: string) => void;
+    get: (options: { id?: string; text?: string }) => Statement | null;
   };
-  createArgument: Function;
+  createArgument: () => Argument;
 }
 
 interface OrganonInstanceOptions {
@@ -46,16 +46,17 @@ const organon = (function module() {
 })();
 
 const engine = organon.start();
+
 const idA = engine.statements.submit({
   text: "Bob is a cow",
   truthValue: false,
 });
+
 const idB = engine.statements.submit({
   text: "Bob wears a cowbell",
   truthValue: false,
 });
 
-// console.log(engine.statements.getAll());
 const argument = engine.createArgument();
 argument.premises.addComponent({
   type: "conditional",
@@ -79,8 +80,8 @@ argument.conclusions.addComponent({
   }
 })
 
-// console.log(argument.plaintext());
-// console.log(argument.getForm());
-console.log(argument.getType());
+console.log(argument.plaintext());
+console.log(argument.getForm());
+console.log(argument.isSound());
 
 export default organon;

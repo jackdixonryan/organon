@@ -1,35 +1,25 @@
 import { Statement } from "../types";
 
-interface Conditional {
-  consequent: Statement;
-  antecedent: Statement;
-}
-
-interface Disjunction {
-  disjunctA: Statement;
-  disjunctB: Statement;
-}
-
 interface Component {
   type: "conditional"|"disjunction"|"statement";
   contents: {
-    consequent?: Statement;
-    antecedent?: Statement;
-    disjunctA?: Statement;
-    disjunctB?: Statement;
-    statement?: Statement;
+    consequent?: Statement | null;
+    antecedent?: Statement | null;
+    disjunctA?: Statement | null;
+    disjunctB?: Statement | null;
+    statement?: Statement | null;
   }
 }
 
 class Argument { 
 
   premises: {
-    addComponent: Function;
+    addComponent: (component: Component) => void;
     list: Component[];
   }
 
   conclusions: {
-    addComponent: Function;
+    addComponent: (component: Component) => void;
     list: Component[];
   }
 
@@ -169,13 +159,57 @@ class Argument {
     };  
   }
 
-  getType(): string {
+  getType(): string|null {
     const form: string = this.getForm();
     if (form.trim() == "if A, then B. A. Therefore, B.") {
       return "modus ponens";
     } else {
-      return "none"
+      return null;
     }
+  }
+
+  isValid() {
+    const type: string|null = this.getType();
+    // ie, not one of the famous forms. 
+    if (!type) {
+      return false; 
+    } else {
+      return true;
+    }
+  }
+
+  isSound() {
+    const isValid = this.isValid();
+    if (isValid) {
+      const truthValues = this.getAllTruthValues();
+      if (truthValues.includes(false)) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  getAllTruthValues(): boolean[] {
+    const allTruthValues: boolean[] = [];
+    this.premises.list.forEach((component) => {
+      const values: any[] = Object.values(component.contents);
+      for (let i = 0; i < values.length; i++) {
+        allTruthValues.push(values[i].truthValue);
+      }
+    });
+
+    this.conclusions.list.forEach((component) => { 
+      const values: any[] = Object.values(component.contents);
+      for (let i = 0; i < values.length; i++) {
+        allTruthValues.push(values[i].truthValue);
+      }
+    });
+
+    return allTruthValues;
+
   }
 }
 
