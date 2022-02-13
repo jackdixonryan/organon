@@ -1,3 +1,4 @@
+import Argument from "./modules/argument";
 import exporter from "./modules/exporter";
 import importer from "./modules/importer";
 import statements from "./modules/statements";
@@ -12,6 +13,7 @@ interface OrganonInstance {
     delete: Function;
     get: Function;
   };
+  createArgument: Function;
 }
 
 interface OrganonInstanceOptions {
@@ -19,6 +21,11 @@ interface OrganonInstanceOptions {
 }
 
 const organon = (function module() {
+
+  function createArgument() {
+    return new Argument();
+  }
+
   return {
     start(organonInstanceOptions?: OrganonInstanceOptions): OrganonInstance {
 
@@ -32,17 +39,29 @@ const organon = (function module() {
       return {
         export: exporter.export,
         statements: statements(statementData),
+        createArgument
       }
     }
   }
 })();
 
 const engine = organon.start();
-engine.statements.submit({
-  text: "Bob is a cow.",
+const idA = engine.statements.submit({
+  text: "Bob is a cow",
+  truthValue: false,
+});
+const idB = engine.statements.submit({
+  text: "Bob wears a cowbell",
   truthValue: false,
 });
 
-console.log(engine.statements.getAll());
+// console.log(engine.statements.getAll());
+const argument = engine.createArgument();
+argument.premises.addConditional({
+  antecedent: engine.statements.get({ id: idA }),
+  consequent: engine.statements.get({ id: idB }),
+});
+
+console.log(argument.plaintext());
 
 export default organon;
