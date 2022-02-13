@@ -1,0 +1,24 @@
+{
+  "name": "organon",
+  "version": "1.0.0",
+  "description": "Rules based engine founded on the principles of formal logic. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test",
+    "dev": "ts-node ./src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackdixonryan/organon.git"
+  },
+  "author": "Jack Ryan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jackdixonryan/organon/issues"
+  },
+  "homepage": "https://github.com/jackdixonryan/organon#readme",
+  "devDependencies": {
+    "@types/node": "^17.0.17",
+    "typescript": "^4.5.5"
+  }
+}
